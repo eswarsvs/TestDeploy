@@ -63,8 +63,8 @@ error 'Error while preparing package'
 }
 rc = sh returnStatus: true, script: "${toolbelt}/sfdx  force:mdapi:deploy -d mdapi_output_dir/ -u ${HUB_ORG} --wait 2"
 if(rc != 0){
-error 'Error while Deploying'    
-}
+  error 'Error while Deploying'    
+  }
 }
 }
 }
