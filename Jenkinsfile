@@ -43,17 +43,6 @@ error 'push failed'
 //error 'permset:assign failed'
 //}
 }
-stage('Deploying to Sandbox') {
-sh "mkdir ${DEPLOY_FOLDER}"
-rc = sh returnStatus: true, script: "${toolbelt}/sfdx  force:source:convert -d mdapi_output_dir/ --packagename package_name"
-if (rc != 0) {
-error 'Error while preparing package'
-}
-rc = sh returnStatus: true, script: "${toolbelt}/sfdx  force:mdapi:deploy -d mdapi_output_dir/ -u ${HUB_ORG} --wait 2"
-if(rc != 0){
-error 'Error while Deploying'    
-}
-}
 stage('Run Apex Test') {
 sh "mkdir -p ${RUN_ARTIFACT_DIR}"
 timeout(time: 120, unit: 'SECONDS') {
@@ -65,6 +54,17 @@ error 'apex test run failed'
 }
 stage('collect results') {
 junit keepLongStdio: true, testResults: 'tests/**/*-junit.xml'
+}
+stage('Deploying to Sandbox') {
+sh "mkdir ${DEPLOY_FOLDER}"
+rc = sh returnStatus: true, script: "${toolbelt}/sfdx  force:source:convert -d mdapi_output_dir/ --packagename package_name"
+if (rc != 0) {
+error 'Error while preparing package'
+}
+rc = sh returnStatus: true, script: "${toolbelt}/sfdx  force:mdapi:deploy -d mdapi_output_dir/ -u ${HUB_ORG} --wait 2"
+if(rc != 0){
+error 'Error while Deploying'    
+}
 }
 }
 }
